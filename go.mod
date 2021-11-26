@@ -11,13 +11,10 @@ require (
 	github.com/imroc/req v0.3.2
 	github.com/pelletier/go-toml v1.2.0
 	github.com/spf13/afero v1.6.0
+	github.com/valyala/fasthttp v1.31.0
 )
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/mattn/go-colorable v0.1.4 // indirect
-	github.com/mattn/go-isatty v0.0.11 // indirect
-	golang.org/x/sys v0.0.0-20200724161237-0e2f3a69832c // indirect
-	golang.org/x/text v0.3.3 // indirect
 )
