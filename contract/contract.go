@@ -9,7 +9,7 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/abdfnx/renio/module"
+	"github.com/abdfnx/renio/config"
 	"github.com/abdfnx/renio/tools"
 
 	"github.com/asaskevich/govalidator"
@@ -18,7 +18,7 @@ import (
 
 var cache = RenioCache{os.TempDir()}
 
-func BundleModule(file string, minify bool, config *module.Config) string {
+func BundleModule(file string, minify bool, config *config.Config) string {
 	tsconfig := ""
 	dir := filepath.Dir(file)
 	tsconfigPath := path.Join(dir, "tsconfig.json")
