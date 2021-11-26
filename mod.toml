@@ -1,0 +1,8 @@
+[module]
+name = "renio"
+version = "0.0.0"
+authors = ["abdfnx"]
+license = "Apache 2.0"
+
+[options]
+no_color = false
