@@ -76,6 +76,20 @@ func RenioSendNameSpace(renio *options.Renio) func(ctx *quickjs.Context, this qu
 			renio.Recv(one, obj)
 			return ctx.Null()
 
+		case Serve:
+			id := args[1]
+			url := args[2]
+			cb := func(res quickjs.Value) string {
+				obj := ctx.Object()
+				defer obj.Free()
+				obj.Set("ok", res)
+				rtrn := renio.Recv(id, res)
+				return rtrn.String()
+			}
+
+			ops.Serve(ctx, cb, id, url)
+			return ctx.Null()
+
 		case FSMkdir:
 			FileSystemChecker(renio.Perms)
 			file := args[1]
@@ -99,7 +113,7 @@ func RenioSendNameSpace(renio *options.Renio) func(ctx *quickjs.Context, this qu
 	}
 }
 
-// FileSystemChecker toolsity to check whether file system access is avaliable or not
+// FileSystemChecker utility to check whether file system access is avaliable or not
 func FileSystemChecker(perms *options.Perms) {
 	if !perms.Fs {
 		tools.LogError("Perms Error: ", "Filesystem access is blocked.")
@@ -107,7 +121,7 @@ func FileSystemChecker(perms *options.Perms) {
 	}
 }
 
-// NetChecker toolsity to check whether net access is avaliable or not
+// NetChecker utility to check whether net access is avaliable or not
 func NetChecker(perms *options.Perms) {
 	if !perms.Net {
 		tools.LogError("Perms Error: ", "Net is blocked.")
@@ -119,5 +133,28 @@ func EnvChecker(perms *options.Perms) {
 	if !perms.Env {
 		tools.LogError("Perms Error: ", "Environment Variables is blocked.")
 		os.Exit(1)
+	}
+}
+
+// RenioRecvNameSpace Native function corresponding to the JavaScript global `__recv`
+// It is binded with `__recv` and accepts arguments including recv ID of the async function
+func RenioRecvNameSpace(renio *options.Renio) func(ctx *quickjs.Context, this quickjs.Value, args []quickjs.Value) quickjs.Value {
+	// the returned function handles the __recv behaviour
+	// It is capable of calling the callback for a particular async op after it has finished
+	return func(ctx *quickjs.Context, this quickjs.Value, args []quickjs.Value) quickjs.Value {
+		fn := args[0]
+
+		if renio.Recv != nil {
+			ctx.ThrowError(fmt.Errorf("recv cannot be called more than once"))
+			return ctx.Null()
+		}
+
+		renio.Recv = func(id quickjs.Value, val quickjs.Value) quickjs.Value {
+			result := fn.Call(id, val)
+			// defer result.Free()
+			return result
+		}
+
+		return ctx.Null()
 	}
 }
