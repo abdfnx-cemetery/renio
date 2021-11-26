@@ -2,15 +2,15 @@ package core
 
 const (
   // FileSystem ops
-  FS_Write     = 1
-  FS_Read      = 2
-  FS_Exists    = 3
-  FS_DirExists = 4
-  FS_Cwd       = 5
-  FS_Stat      = 6
-  FS_Remove    = 7
-  FS_Mkdir     = 9
-  FS_Walk      = 14
+  FSWrite     = 1
+  FSRead      = 2
+  FSExists    = 3
+  FSDirExists = 4
+  FSCwd       = 5
+  FSStat      = 6
+  FSRemove    = 7
+  FSMkdir     = 9
+  FSWalk      = 14
   // console ops
   Log          = 10
   // env ops
