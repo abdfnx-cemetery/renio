@@ -10,3 +10,15 @@ require (
 	github.com/fatih/color v1.9.0
 	github.com/pelletier/go-toml v1.2.0
 )
+
+require (
+	github.com/BurntSushi/toml v0.3.1 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/imroc/req v0.3.2 // indirect
+	github.com/mattn/go-colorable v0.1.4 // indirect
+	github.com/mattn/go-isatty v0.0.11 // indirect
+	github.com/spf13/afero v1.6.0 // indirect
+	golang.org/x/sys v0.0.0-20200724161237-0e2f3a69832c // indirect
+	golang.org/x/text v0.3.3 // indirect
+	gopkg.in/yaml.v2 v2.2.2 // indirect
+)
