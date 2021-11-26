@@ -8,7 +8,9 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef
 	github.com/evanw/esbuild v0.7.3-0.20200919185132-ef34da4ee06e
 	github.com/fatih/color v1.9.0
+	github.com/imroc/req v0.3.2
 	github.com/pelletier/go-toml v1.2.0
+	github.com/spf13/afero v1.6.0
 )
 
 require (
@@ -17,5 +19,5 @@ require (
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-isatty v0.0.11 // indirect
 	golang.org/x/sys v0.0.0-20200724161237-0e2f3a69832c // indirect
-	gopkg.in/yaml.v2 v2.2.2 // indirect
+	golang.org/x/text v0.3.3 // indirect
 )
