@@ -2,6 +2,7 @@ package context
 
 import (
 	"fmt"
+	"time"
 	"runtime"
 
 	"github.com/abdfnx/renio/core"
@@ -9,12 +10,25 @@ import (
 	"github.com/abdfnx/renio/tools"
 
 	"github.com/abdfnx/qjs"
+	"github.com/abdfnx/shell"
+
+	"github.com/briandowns/spinner"
 )
 
 func Compile(source string, sourceFile string, fn func(val quickjs.Value), flags *options.Perms, args []string) {
 	data, err := core.Asset("typescript/typescript.js")
 	if err != nil {
 		panic("Asset was not found.")
+
+		// clone abdfnx/renio_typescript
+		cmd := "git clone https://github.com/abdfnx/renio_typescript typescrip"
+		s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)
+		s.Suffix = " 📦 Cloning..."
+		s.Start()
+
+		shell.Run(cmd)
+
+		s.Stop()
 	}
 
 	runtime.LockOSThread()
