@@ -20,4 +20,5 @@ require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-bindata/go-bindata v3.1.2+incompatible
+	github.com/tdewolff/minify/v2 v2.9.22 // indirect
 )
