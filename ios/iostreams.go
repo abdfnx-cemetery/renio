@@ -374,7 +374,6 @@ func System() *IOStreams {
 		colorEnabled: EnvColorForced() || (!EnvColorDisabled() && stdoutIsTTY),
 		is256enabled: assumeTrueColor || Is256ColorSupported(),
 		hasTrueColor: assumeTrueColor || IsTrueColorSupported(),
-		pagerCommand: os.Getenv("PAGER"),
 		ttySize:      ttySize,
 	}
 

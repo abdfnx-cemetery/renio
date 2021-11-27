@@ -14,7 +14,7 @@ func CheckDotRenioDir() {
 			}
 		`)
 	} else {
-		shell.Exec(`
+		shell.ShellCmd(`
 			if [ ! -d $HOME/.renio ]; then
 				mkdir $HOME/.renio
 			fi

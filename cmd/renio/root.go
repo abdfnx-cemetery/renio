@@ -3,29 +3,28 @@ package renio
 import (
 	"fmt"
 	"io/ioutil"
+	"runtime"
+	"strings"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
-	"runtime"
 
-	"github.com/abdfnx/renio/core"
 	"github.com/abdfnx/renio/core/options"
 	"github.com/abdfnx/renio/config"
-	"github.com/abdfnx/renio/package"
+	_package "github.com/abdfnx/renio/package"
 	"github.com/abdfnx/renio/tools"
 	"github.com/abdfnx/renio/cmd/factory"
 
 	"github.com/fatih/color"
 	"github.com/mitchellh/go-homedir"
+	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 )
 
 var homeDir, _ = homedir.Dir()
 
 var installDir = path.Join(homeDir, "./.renio/")
-
-tools.CheckDotRenioDir()
 
 // Renio functions expected to be passed into cmd
 type Renio struct {
@@ -35,7 +34,9 @@ type Renio struct {
 }
 
 // Execute start the CLI
-func Execute(renio Renio, f *factory.Factory) {
+func Execute(renio Renio, f *factory.Factory) *cobra.Command {
+	tools.CheckDotRenioDir()
+
 	// Load renio mod.toml
 	config, err := config.ConfigLoad()
 	tools.Check(err)
@@ -65,9 +66,6 @@ func Execute(renio Renio, f *factory.Factory) {
 				Open an issue at https://github.com/abdfnx/renio/issues
 			`),
 		},
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return run(&opts)
-		},
 	}
 
 	rootCmd.SetOut(f.IOStreams.Out)
@@ -91,21 +89,45 @@ func Execute(renio Renio, f *factory.Factory) {
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) >= 0 {
-				bundle := renio.Bundle(args[0], true, config)
 				env := options.Environment{
 					NoColor:  config.Options.NoColor,
 					Args:     args[1:],
 					RunTests: false,
 				}
+				
+				// check if the argument start with "http" and download it
+				if strings.HasPrefix(args[0], "http") {
+					// fmt.Println(color.Cyan("Download ") + args[0])
 
-				opt := options.Options{
-					SourceFile: args[0],
-					Source:     bundle,
-					Perms:      &options.Perms{fsFlag, netFlag, envFlag},
-					Env:        env,
+					c := color.New(color.FgCyan)
+
+					c.Print("Download ")
+					fmt.Println(args[0])
+					
+					tools.Download(args[0])
+
+					b := renio.Bundle(tools.FileX(args[0]), true, config)
+
+					opt := options.Options{
+						SourceFile: path.Join(installDir, "temp.js"),
+						Source:     b,
+						Perms:      &options.Perms{fsFlag, netFlag, envFlag},
+						Env:        env,
+					}
+
+					renio.Run(opt)
+				} else {
+					bundle := renio.Bundle(args[0], true, config)
+
+					opt := options.Options{
+						SourceFile: args[0],
+						Source:     bundle,
+						Perms:      &options.Perms{fsFlag, netFlag, envFlag},
+						Env:        env,
+					}
+
+					renio.Run(opt)
 				}
-
-				renio.Run(opt)
 			}
 		},
 	}
@@ -170,15 +192,16 @@ func Execute(renio Renio, f *factory.Factory) {
 	// --minify flag for bundling
 	bundleCmd.Flags().BoolVarP(&minifyFlag, "minify", "m", false, "Minify the output bundle")
 
-	// pkg sub-command for trigger the package
-	var pkgCmd = &cobra.Command{
-		Use:   "pkg [file]",
+	// package sub-command for trigger the package
+	var packageCmd = &cobra.Command{
+		Use:   "package [file]",
 		Short: "Package your script to a standalone executable.",
 		Long:  `Package your script to a standalone executable.`,
+		Aliases: []string{"pkg"},
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) >= 0 {
-				package.PkgSource(args[0])
+				_package.PkgSource(args[0])
 			}
 		},
 	}
@@ -217,12 +240,15 @@ func Execute(renio Renio, f *factory.Factory) {
 	testCmd.Flags().BoolVar(&envFlag, "env", false, "Allow Environment Variables access")
 
 	// Add sub-commands to root command
-	rootCmd.AddCommand(bundleCmd, runCmd, pkgCmd, devCmd, testCmd)
+	rootCmd.AddCommand(bundleCmd, runCmd, packageCmd, devCmd, testCmd)
 
-	// Execute! :)
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	return rootCmd
+}
+
+// replace a string if it is windows
+func isWindows(toChange *string, replacement string) {
+	if runtime.GOOS == "windows" {
+		*toChange = replacement
 	}
 }
 
@@ -231,7 +257,7 @@ func shebang(loc string) string {
 #!/bin/sh
 renio "run" "%s" "$@"`
 	// windows
-	tools.isWindows(&exec, `@renio "run" "%s" %*`)
+	isWindows(&exec, `@renio "run" "%s" %*`)
 
 	return fmt.Sprintf(exec, loc)
 }

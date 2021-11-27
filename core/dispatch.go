@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/abdfnx/qjs"
@@ -26,89 +27,105 @@ func RenioSendNameSpace(renio *options.Renio) func(ctx *quickjs.Context, this qu
 	// The returned function handles the op and execute corresponding native code
 	return func(ctx *quickjs.Context, this quickjs.Value, args []quickjs.Value) quickjs.Value {
 		switch args[0].Int32() {
-		case FSRead:
-			FileSystemChecker(renio.Perms)
-			file := args[1]
-			val := fs.ReadFile(ctx, file)
-			return val
+			case FSRead:
+				FileSystemChecker(renio.Perms)
+				file := args[1]
+				val := fs.ReadFile(ctx, file)
+				fmt.Println(val)
+				return val
 
-		case FSExists:
-			FileSystemChecker(renio.Perms)
-			file := args[1]
-			val := fs.Exists(ctx, file)
-			return val
+			case FSExists:
+				FileSystemChecker(renio.Perms)
+				file := args[1]
+				val := fs.Exists(ctx, file)
+				fmt.Println(val)
+				return val
 
-		case FSWrite:
-			FileSystemChecker(renio.Perms)
-			file := args[1]
-			contents := args[2]
-			val := fs.WriteFile(ctx, file, contents)
-			return val
+			case FSWrite:
+				FileSystemChecker(renio.Perms)
+				file := args[1]
+				contents := args[2]
+				val := fs.WriteFile(ctx, file, contents)
+				fmt.Println(val)
+				return val
 
-		case FSCwd:
-			FileSystemChecker(renio.Perms)
-			val := fs.Cwd(ctx)
-			return val
+			case FSCwd:
+				FileSystemChecker(renio.Perms)
+				val := fs.Cwd(ctx)
+				return val
 
-		case FSStat:
-			FileSystemChecker(renio.Perms)
-			file := args[1]
-			val := fs.Stat(ctx, file)
-			return val
+			case FSStat:
+				FileSystemChecker(renio.Perms)
+				file := args[1]
+				val := fs.Stat(ctx, file)
+				fmt.Println(val)
+				return val
 
-		case FSRemove:
-			FileSystemChecker(renio.Perms)
-			file := args[1]
-			val := fs.Remove(ctx, file)
-			return val
+			case FSRemove:
+				FileSystemChecker(renio.Perms)
+				file := args[1]
+				val := fs.Remove(ctx, file)
+				fmt.Println(val)
+				return val
 
-		case Log:
-			return ConsoleLog(ctx, args)
+			case Log:
+				return ConsoleLog(ctx, args)
 
-		case Fetch:
-			NetChecker(renio.Perms)
-			one := args[1]
-			url := args[2]
-			body := ops.Fetch(ctx, url)
-			obj := ctx.Object()
-			defer obj.Free()
-			obj.Set("ok", body)
-			renio.Recv(one, obj)
-			return ctx.Null()
-
-		case Serve:
-			id := args[1]
-			url := args[2]
-			cb := func(res quickjs.Value) string {
+			case Fetch:
+				NetChecker(renio.Perms)
+				one := args[1]
+				url := args[2]
+				body := ops.Fetch(ctx, url)
 				obj := ctx.Object()
 				defer obj.Free()
-				obj.Set("ok", res)
-				rtrn := renio.Recv(id, res)
-				return rtrn.String()
-			}
+				obj.Set("ok", body)
+				renio.Recv(one, obj)
+				return ctx.Null()
 
-			ops.Serve(ctx, cb, id, url)
-			return ctx.Null()
+			case Serve:
+				id := args[1]
+				url := args[2]
+				cb := func(res quickjs.Value) string {
+					obj := ctx.Object()
+					defer obj.Free()
+					obj.Set("ok", res)
+					rtrn := renio.Recv(id, res)
+					return rtrn.String()
+				}
 
-		case FSMkdir:
-			FileSystemChecker(renio.Perms)
-			file := args[1]
-			val := fs.Mkdir(ctx, file)
-			return val
+				ops.Serve(ctx, cb, id, url)
+				return ctx.Null()
 
-		case Env:
-			EnvChecker(renio.Perms)
-			val := ops.Env(ctx, args)
-			return val
+			case FSMkdir:
+				FileSystemChecker(renio.Perms)
+				file := args[1]
+				val := fs.Mkdir(ctx, file)
+				fmt.Println(val)
+				return val
 
-		case FSWalk:
-			FileSystemChecker(renio.Perms)
-			file := args[1]
-			val := fs.Walk(ctx, file)
-			return val
+			case Env:
+				EnvChecker(renio.Perms)
+				val := ops.Env(ctx, args)
+				fmt.Println(val)
+				return val
 
-		default:
-			return ctx.Null()
+			case FSWalk:
+				FileSystemChecker(renio.Perms)
+				file := args[1]
+				val := fs.Walk(ctx, file)
+				fmt.Println(val)
+				return val
+			
+			case Plugin:
+				plugin := args[1].String()
+				input := args[2].String()
+				dat := (OpenPlugin(plugin, input)).(string)
+				val := ctx.String(dat)
+				defer val.Free()
+				return val
+
+			default:
+				return ctx.Null()
 		}
 	}
 }
@@ -142,18 +159,18 @@ func RenioRecvNameSpace(renio *options.Renio) func(ctx *quickjs.Context, this qu
 	// the returned function handles the __recv behaviour
 	// It is capable of calling the callback for a particular async op after it has finished
 	return func(ctx *quickjs.Context, this quickjs.Value, args []quickjs.Value) quickjs.Value {
-		fn := args[0]
+		// fn := args[0]
 
 		if renio.Recv != nil {
 			ctx.ThrowError(fmt.Errorf("recv cannot be called more than once"))
 			return ctx.Null()
 		}
 
-		renio.Recv = func(id quickjs.Value, val quickjs.Value) quickjs.Value {
-			result := fn.Call(id, val)
-			// defer result.Free()
-			return result
-		}
+		// renio.Recv = func(id quickjs.Value, val quickjs.Value) quickjs.Value {
+		// 	result := fn.Call(id, val)
+		// 	defer result.Free()
+		// 	return result
+		// }
 
 		return ctx.Null()
 	}

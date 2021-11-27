@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	files, _ := ioutil.ReadDir("js")
+	files, _ := ioutil.ReadDir("node")
 
 	sort.Sort(ByNumericalFilename(files))
 
@@ -28,7 +28,7 @@ func main() {
 	for _, f := range files {
 		log.Printf("Bundling %s\n", f.Name())
 
-		file, err := os.Open(filepath.Join("js", f.Name()))
+		file, err := os.Open(filepath.Join("node", f.Name()))
 		if err != nil {
 			log.Fatalf("Got error opening %s: %v", f.Name(), err)
 		}
@@ -47,7 +47,7 @@ func main() {
 		log.Fatalf("Error in making directory - %v", err)
 	}
 
-	err = ioutil.WriteFile(filepath.Join("target", "renop.js"), []byte(finalSource), 0644)
+	err = ioutil.WriteFile(filepath.Join("target", "renio.js"), []byte(finalSource), 0644)
 	if err != nil {
 		log.Fatalf("Error writing file %v", err)
 	}

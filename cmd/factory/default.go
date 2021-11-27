@@ -1,9 +1,6 @@
 package factory
 
 import (
-	"os"
-	"net/http"
-
 	"github.com/abdfnx/renio/ios"
 )
 
