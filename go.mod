@@ -12,6 +12,7 @@ require (
 	github.com/pelletier/go-toml v1.2.0
 	github.com/spf13/afero v1.6.0
 	github.com/valyala/fasthttp v1.31.0
+	github.com/abdfnx/shell v0.3.15
 )
 
 require (

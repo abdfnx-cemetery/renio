@@ -4,6 +4,8 @@ github.com/Netflix/go-env v0.0.0-20200908232752-3e802f601e28 h1:wLrAnWai7pNNQ1d/
 github.com/Netflix/go-env v0.0.0-20200908232752-3e802f601e28/go.mod h1:9XMFaCeRyW7fC9XJOWQ+NdAv8VLG7ys7l3x4ozEGLUQ=
 github.com/abdfnx/qjs v0.0.0-20211125064426-95eeaf4763e7 h1:ceG3r08vy68b4Pg51T3yaxdQVQVPfjN+dysb7uU2F4Q=
 github.com/abdfnx/qjs v0.0.0-20211125064426-95eeaf4763e7/go.mod h1:EqxNK5VotqLNjElmFxRalLpolw0O2+MpXYuWH5M9vEk=
+github.com/abdfnx/shell v0.3.15 h1:hSORsW/jP2h8z9wn0RHYhs7vqHOqgacS5sLX1y3JTC8=
+github.com/abdfnx/shell v0.3.15/go.mod h1:AZBTj89hhlM0mA5pAY/L6g9oBEpdfq4J3SskJURphO0=
 github.com/andybalholm/brotli v1.0.2 h1:JKnhI/XQ75uFBTiuzXpzFrUriDPiZjlOSzh6wXogP0E=
 github.com/andybalholm/brotli v1.0.2/go.mod h1:loMXtMfwqflxFJPmdbJO0a3KNoPuLBgiu3qAvBg8x/Y=
 github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef h1:46PFijGLmAjMPwCCCo7Jf0W6f9slllCkkv7vyc1yOSg=
