@@ -11,15 +11,19 @@ import (
 
 func FileX(file string) string {
 	tsjs := ""
-  
+
 	// check if the file is javascript or typescript
 	if strings.HasSuffix(file, ".js") {
 	  tsjs = "temp.js"
 	} else if strings.HasSuffix(file, ".ts") {
 	  tsjs = "temp.ts"
 	}
-  
-	tempDir := filepath.Join(os.TempDir(), tsjs)
+
+  renioTmpDir := filepath.Join(os.TempDir(), "renio")
+
+  os.Mkdir(renioTmpDir, 0777)
+
+	tempDir := filepath.Join(os.TempDir(), "renio", tsjs)
 
 	return tempDir
 }

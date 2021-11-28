@@ -85,7 +85,7 @@ func Execute(renio Renio, f *factory.Factory) *cobra.Command {
 	// Run sub-command
 	var runCmd = &cobra.Command{
 		Use:   "run [file]",
-		Short: "Run a JavaScript and TypeScript source file",
+		Short: "Run a JavaScript or TypeScript source file",
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) >= 0 {
@@ -147,7 +147,7 @@ func Execute(renio Renio, f *factory.Factory) *cobra.Command {
 	var devCmd = &cobra.Command{
 		Use:   "dev [file]",
 		Short: "Run a script in development mode.",
-		Long:  `Run a script in development mode. It enables type-checking using the inbuilt TypeScript compiler.`,
+		Long:  `Run a script in development mode. It enables type-checking using the inbuilt TypeScript compiler 📦.`,
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) >= 0 {
@@ -210,7 +210,7 @@ func Execute(renio Renio, f *factory.Factory) *cobra.Command {
 	var testCmd = &cobra.Command{
 		Use:   "test",
 		Short: "Run tests for your Renio scripts.",
-		Long:  `Run tests for your Renio scripts. All files matching *_test.js are run.`,
+		Long:  `Run tests for your Renio scripts. All files matching *_test.js | *_test.ts | *.test.js | *.test.ts are run.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			env := options.Environment{
 				NoColor:  config.Options.NoColor,
