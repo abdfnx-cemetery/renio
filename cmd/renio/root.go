@@ -59,7 +59,8 @@ func Execute(renio Renio, f *factory.Factory) *cobra.Command {
 			renio run <file> --net
 			renio test --fs
 			renio bundle <file> --minify
-			renio dev <file> --env
+			renio package
+			renio dev <file>
 		`),
 		Annotations: map[string]string{
 			"help:tellus": heredoc.Doc(`
